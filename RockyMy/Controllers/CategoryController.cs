@@ -59,5 +59,32 @@ namespace RockyMy.Controllers
             }
             return View(category);
         }
+        public IActionResult Delete(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var cat = _context.Categories
+                .FirstOrDefault(m => m.Id == id);
+            if (cat == null)
+            {
+                return NotFound();
+            }
+
+            return View(cat);
+        }
+
+        // POST: Depts/Delete/5
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Delete(int id)
+        {
+            var cat = _context.Categories.Find(id);
+            _context.Categories.Remove(cat);
+            _context.SaveChanges();
+            return RedirectToAction(nameof(Index));
+        }
     }
 }
