@@ -33,14 +33,14 @@ namespace RockyMy.Controllers
             }
             return View(category);
         }
-        public async Task<IActionResult> Edit(int? id)
+        public IActionResult Edit(int? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var dept = await _context.Categories.FindAsync(id);
+            var dept = _context.Categories.Find(id);
             if (dept == null)
             {
                 return NotFound();
