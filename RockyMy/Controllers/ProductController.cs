@@ -9,6 +9,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Collections.Generic;
+using RockyMy.ViewModels;
 
 namespace RockyMy.Controllers
 {
@@ -28,18 +29,27 @@ namespace RockyMy.Controllers
         // instead of Create and Edit
         public IActionResult Upsert(int? id)
         {
-            IEnumerable<SelectListItem> CategoryDropDown = _context.Categories.Select(a => new SelectListItem()
-            {
-                Value = a.Id.ToString(),
-                Text = a.Name
-            }).ToList();
+            //migrate to strongly typed ViewModels
+            //IEnumerable<SelectListItem> CategoryDropDown = _context.Categories.Select(a => new SelectListItem()
+            //{
+            //    Value = a.Id.ToString(),
+            //    Text = a.Name
+            //}).ToList();
+            //ViewBag.CategoryDropDown = CategoryDropDown;
 
-            ViewBag.CategoryDropDown = CategoryDropDown;
+            ProductVM productVM = new ProductVM() {
+                Product = new Product(),
+                CategorySelecytList = _context.Categories.Select(a => new SelectListItem()
+                {
+                    Value = a.Id.ToString(),
+                    Text = a.Name
+                }).ToList()
+                };
 
             if (id == null)
             {
                 //Create
-                return View();
+                return View(productVM);
             }
             else
             {
