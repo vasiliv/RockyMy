@@ -7,6 +7,8 @@ using System.IO;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using System.Collections.Generic;
 
 namespace RockyMy.Controllers
 {
@@ -26,6 +28,14 @@ namespace RockyMy.Controllers
         // instead of Create and Edit
         public IActionResult Upsert(int? id)
         {
+            IEnumerable<SelectListItem> CategoryDropDown = _context.Categories.Select(a => new SelectListItem()
+            {
+                Value = a.Id.ToString(),
+                Text = a.Name
+            }).ToList();
+
+            ViewBag.CategoryDropDown = CategoryDropDown;
+
             if (id == null)
             {
                 //Create
