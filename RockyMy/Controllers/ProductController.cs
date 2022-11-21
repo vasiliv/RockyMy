@@ -54,12 +54,12 @@ namespace RockyMy.Controllers
             else
             {
                 //Update
-                var prod = _context.Products.Find(id);
-                if (prod == null)
+                productVM.Product = _context.Products.Find(id);
+                if (productVM.Product == null)
                 {
                     return NotFound();
                 }
-                return View(prod);
+                return View(productVM);
             }            
         }
         // instead of Create and Edit
