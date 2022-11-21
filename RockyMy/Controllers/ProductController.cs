@@ -65,43 +65,71 @@ namespace RockyMy.Controllers
         // instead of Create and Edit
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Upsert(Product model)
+        //public IActionResult Upsert(Product model)
+        public IActionResult Upsert(ProductVM productVM)
         {
-            //if (ModelState.IsValid)
-            //{
-                string uniqueFileName = UploadedFile(model);
+            if (ModelState.IsValid)
+            {
+                //from https://github.com/vasiliv/ImageUpload master branch, MvcCoreUploadAndDisplayImageDemo project
+                //string uniqueFileName = UploadedFile(model);
 
-                Product product = new Product()
+                //Product product = new Product()
+                //{
+                //    Name = model.Name,
+                //    Description = model.Description,
+                //    Price = model.Price,
+                //    Image = uniqueFileName,
+                //    //gasascorebelia
+                //    CategoryId = 1
+                //};
+
+                //_context.Add(product);
+                //_context.SaveChanges();
+                var files = HttpContext.Request.Form.Files;
+                string webRootPath = _webHostEnvironment.WebRootPath;
+
+                if (productVM.Product.Id == 0)
                 {
-                    Name = model.Name,
-                    Description = model.Description,
-                    Price = model.Price,
-                    Image = uniqueFileName,
-                    //gasascorebelia
-                    CategoryId = 1
-                };
+                    //create
 
-                _context.Add(product);
+                    //location of files
+                    string upload = webRootPath + WC.ImagePath;
+                    string fileName = Guid.NewGuid().ToString();
+                    string extension = Path.GetExtension(files[0].FileName);
+
+                    using (var fileStream = new FileStream(Path.Combine(upload, fileName + extension), FileMode.Create))
+                    {
+                        files[0].CopyTo(fileStream);
+                    }
+                    productVM.Product.Image = fileName + extension;
+
+                    _context.Products.Add(productVM.Product);
+                    
+                }
+                else
+                {
+                    //edit
+                }
                 _context.SaveChanges();
                 return RedirectToAction(nameof(Index));
-            //}
-            //return View();
-        }
-        private string UploadedFile(Product model)
-        {
-            string uniqueFileName = null;
-
-            if (model.ProfileImage != null)
-            {
-                string uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "images");
-                uniqueFileName = Guid.NewGuid().ToString() + "_" + model.ProfileImage.FileName;
-                string filePath = Path.Combine(uploadsFolder, uniqueFileName);
-                using (var fileStream = new FileStream(filePath, FileMode.Create))
-                {
-                    model.ProfileImage.CopyTo(fileStream);
-                }
             }
-            return uniqueFileName;
+            return View();
         }
+        //from https://github.com/vasiliv/ImageUpload master branch, MvcCoreUploadAndDisplayImageDemo project
+        //private string UploadedFile(Product model)
+        //{
+        //    string uniqueFileName = null;
+        //    if (model.ProfileImage != null)
+        //    {
+        //        string uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "images");
+        //        uniqueFileName = Guid.NewGuid().ToString() + "_" + model.ProfileImage.FileName;
+        //        string filePath = Path.Combine(uploadsFolder, uniqueFileName);
+        //        using (var fileStream = new FileStream(filePath, FileMode.Create))
+        //        {
+        //            model.ProfileImage.CopyTo(fileStream);
+        //        }
+        //    }
+        //    return uniqueFileName;
+        //}
     }
 }
