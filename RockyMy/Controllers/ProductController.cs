@@ -97,6 +97,7 @@ namespace RockyMy.Controllers
                     string fileName = Guid.NewGuid().ToString();
                     string extension = Path.GetExtension(files[0].FileName);
 
+                    //upload image
                     using (var fileStream = new FileStream(Path.Combine(upload, fileName + extension), FileMode.Create))
                     {
                         files[0].CopyTo(fileStream);
@@ -109,6 +110,37 @@ namespace RockyMy.Controllers
                 else
                 {
                     //edit
+                    var objFromDb = _context.Products.AsNoTracking().FirstOrDefault(p => p.Id == productVM.Product.Id);
+
+                    if (files.Count > 0)
+                    {
+                        //location of files
+                        string upload = webRootPath + WC.ImagePath;
+                        //string upload =  WC.ImagePath;
+                        string fileName = Guid.NewGuid().ToString();
+                        string extension = Path.GetExtension(files[0].FileName);
+
+                        var oldFile = Path.Combine(upload, objFromDb.Image);
+
+                        if (System.IO.File.Exists(oldFile))
+                        {
+                            System.IO.File.Delete(oldFile);
+                        }
+                        //upload new image
+                        //using (var fileStream = new FileStream(Path.Combine(upload, fileName + extension), FileMode.Create))
+                        using (var fileStream = new FileStream(upload + fileName + extension, FileMode.Create))
+                        {
+                            files[0].CopyTo(fileStream);
+                        }
+                        //if the image is modified, change filename and extension
+                        productVM.Product.Image = fileName + extension;
+                    }
+                    //image file was not updated
+                    else
+                    {
+                        productVM.Product.Image = objFromDb.Image;
+                    }
+                    _context.Products.Update(productVM.Product);
                 }
                 _context.SaveChanges();
                 return RedirectToAction(nameof(Index));
