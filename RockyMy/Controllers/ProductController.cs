@@ -147,6 +147,48 @@ namespace RockyMy.Controllers
             }
             return View();
         }
+        //GET - DELETE
+        public IActionResult Delete(int? id)
+        {
+            if (id == null || id == 0)
+            {
+                return NotFound();
+            }
+            Product product = _context.Products.Include(u => u.Category).FirstOrDefault(u => u.Id == id);
+            //product.Category = _db.Category.Find(product.CategoryId);
+            if (product == null)
+            {
+                return NotFound();
+            }
+
+            return View(product);
+        }
+
+        //POST - DELETE
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public IActionResult DeletePost(int? id)
+        {
+            var obj = _context.Products.Find(id);
+            if (obj == null)
+            {
+                return NotFound();
+            }
+
+            string upload = _webHostEnvironment.WebRootPath + WC.ImagePath;
+            var oldFile = Path.Combine(upload, obj.Image);
+
+            if (System.IO.File.Exists(oldFile))
+            {
+                System.IO.File.Delete(oldFile);
+            }
+
+
+            _context.Products.Remove(obj);
+            _context.SaveChanges();
+            return RedirectToAction("Index");
+
+        }
         //from https://github.com/vasiliv/ImageUpload master branch, MvcCoreUploadAndDisplayImageDemo project
         //private string UploadedFile(Product model)
         //{

@@ -2,6 +2,9 @@
 {
     public static class WC
     {
-        public static string ImagePath = @"~/images/product/";
+        //My
+        //public static string ImagePath = @"~/images/product/";
+        //SourceCode
+        public const string ImagePath = @"\images\product\";
     }
 }
