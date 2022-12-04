@@ -24,7 +24,14 @@ namespace RockyMy.Controllers
         }
         public IActionResult Index()
         {
-            return View(_context.Products.Include(x => x.Category).ToList()) ;
+            IEnumerable<Product> objList = _context.Products.Include(u => u.Category).Include(u => u.ApplicationType);
+
+            //foreach (var obj in objList)
+            //{
+            //    obj.Category = _context.Categories.AsNoTracking().FirstOrDefault(u => u.Id == obj.CategoryId);
+            //    obj.ApplicationType = _context.ApplicationTypes.AsNoTracking().FirstOrDefault(u => u.Id == obj.ApplicationTypeId );
+            //}
+            return View(objList) ;
         }
         // instead of Create and Edit
         public IActionResult Upsert(int? id)
@@ -39,12 +46,17 @@ namespace RockyMy.Controllers
 
             ProductVM productVM = new ProductVM() {
                 Product = new Product(),
-                CategorySelecytList = _context.Categories.Select(a => new SelectListItem()
+                CategorySelectList = _context.Categories.Select(a => new SelectListItem()
+                {
+                    Value = a.Id.ToString(),
+                    Text = a.Name
+                }).ToList(),
+                ApplicationTypeSelectList = _context.ApplicationTypes.Select(a => new SelectListItem()
                 {
                     Value = a.Id.ToString(),
                     Text = a.Name
                 }).ToList()
-                };
+            };
 
             if (id == null)
             {
@@ -145,7 +157,12 @@ namespace RockyMy.Controllers
                 _context.SaveChanges();
                 return RedirectToAction(nameof(Index));
             }
-            productVM.CategorySelecytList = _context.Categories.Select(a => new SelectListItem()
+            productVM.CategorySelectList = _context.Categories.Select(a => new SelectListItem()
+            {
+                Value = a.Id.ToString(),
+                Text = a.Name
+            }).ToList();
+            productVM.ApplicationTypeSelectList = _context.ApplicationTypes.Select(a => new SelectListItem()
             {
                 Value = a.Id.ToString(),
                 Text = a.Name
@@ -159,7 +176,7 @@ namespace RockyMy.Controllers
             {
                 return NotFound();
             }
-            Product product = _context.Products.Include(u => u.Category).FirstOrDefault(u => u.Id == id);
+            Product product = _context.Products.Include(u => u.Category).Include(u => u.ApplicationType).FirstOrDefault(u => u.Id == id);
             //product.Category = _db.Category.Find(product.CategoryId);
             if (product == null)
             {

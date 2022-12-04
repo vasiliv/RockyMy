@@ -22,5 +22,10 @@ namespace RockyMy.Models
         //navigation properties
         public int CategoryId { get; set; }
         public Category Category { get; set; }
+
+        //navigation properties
+        [Display(Name = "Application Type")]
+        public int? ApplicationTypeId { get; set; }        
+        public ApplicationType ApplicationType { get; set; }
     }
 }

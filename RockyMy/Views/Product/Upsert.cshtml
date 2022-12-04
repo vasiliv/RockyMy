@@ -53,8 +53,13 @@
             </div>
             <div class="form-group">
                 <label asp-for="Product.CategoryId" class="control-label"></label>
-                <select asp-for="Product.CategoryId" class="form-control" asp-items="@Model.CategorySelecytList"></select>
+                <select asp-for="Product.CategoryId" class="form-control" asp-items="@Model.CategorySelectList"></select>
                 <span asp-validation-for="Product.CategoryId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Product.ApplicationTypeId" class="control-label"></label>
+                <select asp-for="Product.ApplicationTypeId" class="form-control" asp-items="@Model.ApplicationTypeSelectList"></select>
+                <span asp-validation-for="Product.ApplicationTypeId" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />
