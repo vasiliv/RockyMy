@@ -145,7 +145,12 @@ namespace RockyMy.Controllers
                 _context.SaveChanges();
                 return RedirectToAction(nameof(Index));
             }
-            return View();
+            productVM.CategorySelecytList = _context.Categories.Select(a => new SelectListItem()
+            {
+                Value = a.Id.ToString(),
+                Text = a.Name
+            }).ToList();
+            return View(productVM);
         }
         //GET - DELETE
         public IActionResult Delete(int? id)
