@@ -27,7 +27,8 @@ namespace RockyMy.Controllers
         {
             HomeVM homeVM = new HomeVM()
             {
-                Products= _context.Products.Include(p => p.Category).Include(p => p.ApplicationType)
+                Products = _context.Products.Include(p => p.Category).Include(p => p.ApplicationType),
+                Categories = _context.Categories
             };
             return View(homeVM);
         }
